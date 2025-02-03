@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AppDataSource } from '../data-source';
 import { UserModule } from './user/user.module';
 import { JwtAuthMiddleware } from './user/middleware/jwt-token.middleware';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JwtAuthMiddleware } from './user/middleware/jwt-token.middleware';
       inject: [],
     }),
     UserModule,
+    PostModule,
   ],
   controllers: [],
   providers: [],
