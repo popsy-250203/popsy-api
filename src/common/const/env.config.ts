@@ -5,6 +5,7 @@ const dbPort = 'DB_PORT';
 const dbUsername = 'DB_USERNAME';
 const dbPassword = 'DB_PASSWORD';
 const dbDatabase = 'DB_DATABASE';
+const jwtSecret = 'JWT_SECRET';
 
 export const envVariables = {
   dbType: 'mysql',
@@ -15,4 +16,5 @@ export const envVariables = {
   dbUsername,
   dbPassword,
   dbDatabase,
+  jwtSecret,
 };

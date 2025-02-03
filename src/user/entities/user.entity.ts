@@ -10,8 +10,8 @@ export enum AuthProvider {
   APPLE = 'apple',
 }
 
-@Entity()
-export class User extends BaseEntity {
+@Entity('user')
+export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 50 })
   nickname: string;
 
