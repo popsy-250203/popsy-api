@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 import { BaseEntity } from 'src/common/entity/base-entity.entity';
 
@@ -14,4 +14,8 @@ export class PostEntity extends BaseEntity {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @Column()
+  @IsBoolean()
+  isPublic: boolean;
 }
