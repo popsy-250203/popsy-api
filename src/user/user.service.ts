@@ -2,10 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { classToPlain } from 'class-transformer';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { RegisterOrLoginDto } from './dto/registor-or-login.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 
 export enum AuthProvider {
@@ -102,7 +103,13 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return classToPlain(user);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

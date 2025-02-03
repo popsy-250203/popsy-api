@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 
-import { envVariables } from 'src/common/const/env.config';
-
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserEntity } from './entities/user.entity';
@@ -12,7 +10,7 @@ import { UserEntity } from './entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     JwtModule.register({
-      secret: envVariables.jwtSecret,
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '90d' },
     }),
   ],

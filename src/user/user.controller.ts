@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
@@ -21,9 +22,10 @@ export class UserController {
     return this.userService.registerOrLogin(registerOrLoginDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get()
+  findOne(@Request() req) {
+    const userId = req.user.userId;
+    return this.userService.findOne(+userId);
   }
 
   @Patch(':id')
