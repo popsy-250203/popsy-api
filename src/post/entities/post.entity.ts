@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -10,6 +10,8 @@ import {
 
 import { BaseEntity } from 'src/common/entity/base-entity.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+
+import { PostLikeEntity } from './post-like.entity';
 
 @Entity('post')
 export class PostEntity extends BaseEntity {
@@ -50,4 +52,7 @@ export class PostEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.posts)
   creator: UserEntity;
+
+  @OneToMany(() => PostLikeEntity, (like) => like.post)
+  likes: PostLikeEntity[];
 }

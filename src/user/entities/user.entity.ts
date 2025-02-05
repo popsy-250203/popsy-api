@@ -1,7 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
+import { PostEntity } from 'src/post/entities/post.entity';
+
 import { BaseEntity } from '../../common/entity/base-entity.entity';
+import { PostLikeEntity } from 'src/post/entities/post-like.entity';
 
 export enum AuthProvider {
   EMAIL = 'email',
@@ -38,4 +41,10 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
+
+  @OneToMany(() => PostEntity, (post) => post.creator)
+  posts: PostEntity[];
+
+  @OneToMany(() => PostLikeEntity, (like) => like.user)
+  likes: PostLikeEntity[];
 }
