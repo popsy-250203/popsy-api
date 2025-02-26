@@ -25,16 +25,19 @@ export class PostEntity extends BaseEntity {
   @IsNotEmpty()
   content: string;
 
-  @Column()
+  @Column({ nullable: true })
   @IsUrl()
-  @IsOptional()
-  @IsNotEmpty()
   imageUrl: string;
 
   @Column({ default: 0 })
   @IsNumber()
   @IsNotEmpty()
   viewCount: number;
+
+  @Column()
+  @IsString()
+  @IsNotEmpty()
+  category: string;
 
   @Column({ default: 0 })
   @IsNumber()
