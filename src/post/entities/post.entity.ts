@@ -3,7 +3,6 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   IsUrl,
 } from 'class-validator';

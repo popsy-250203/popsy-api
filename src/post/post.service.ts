@@ -37,14 +37,14 @@ export class PostService {
     page?: number,
     limit?: number,
   ) {
-    const posts = await this.postRepository.find({
+    const [posts, total] = await this.postRepository.findAndCount({
       ...(sort &&
         sortKey && { order: { [sortKey]: sort === 'desc' ? 'DESC' : 'ASC' } }),
       ...(page && limit && { skip: (page - 1) * limit, take: limit }),
       relations: ['creator'],
     });
 
-    return posts;
+    return { posts, total };
   }
 
   async getPost(id: number) {
