@@ -82,15 +82,22 @@ export class PostService {
     return this.createNewUnlike(post, userId, qr);
   }
 
-  private async findPostById(id: number): Promise<PostEntity> {
+  private async findPostById(
+    id: number,
+  ): Promise<PostEntity & { likeCount: number }> {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['creator'],
+      relations: ['creator', 'likes'],
     });
+
     if (!post) {
       throw new NotFoundException('Post not found');
     }
-    return post;
+
+    return {
+      ...post,
+      likeCount: post.likes.length,
+    };
   }
 
   private async findLike(
