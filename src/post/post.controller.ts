@@ -52,8 +52,15 @@ export class PostController {
     @Query('sortKey') sortKey?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('createdAfter') createdAfter?: Date,
   ) {
-    return this.postService.getPostList(sort, sortKey, page, limit);
+    return this.postService.getPostList(
+      sort,
+      sortKey,
+      page,
+      limit,
+      createdAfter,
+    );
   }
 
   @Get(':id')

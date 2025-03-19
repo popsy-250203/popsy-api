@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, QueryRunner as QR } from 'typeorm';
+import { Repository, QueryRunner as QR, MoreThanOrEqual } from 'typeorm';
 
 import { PostEntity } from './entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -36,8 +36,15 @@ export class PostService {
     sortKey?: string,
     page?: number,
     limit?: number,
+    createdAfter?: Date | undefined,
   ) {
+    console.log('createdAfter', createdAfter);
     const [posts, total] = await this.postRepository.findAndCount({
+      where: {
+        ...(createdAfter && {
+          createdAt: MoreThanOrEqual(createdAfter),
+        }),
+      },
       ...(sort &&
         sortKey && { order: { [sortKey]: sort === 'desc' ? 'DESC' : 'ASC' } }),
       ...(page && limit && { skip: (page - 1) * limit, take: limit }),
