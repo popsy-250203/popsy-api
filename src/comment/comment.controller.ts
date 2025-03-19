@@ -1,7 +1,15 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post, Request } from '@nestjs/common';
+
 import { CommentService } from './comment.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
+
+  @Post()
+  create(@Body() createCommentDto: CreateCommentDto, @Request() req): any {
+    const userId = req.user.userId;
+    return this.commentService.createComment(createCommentDto, userId);
+  }
 }
