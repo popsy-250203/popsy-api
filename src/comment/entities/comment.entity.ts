@@ -1,8 +1,10 @@
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 
 import { BaseEntity } from 'src/common/entity/base-entity.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+
+import { CommentLikeEntity } from './comment-like.entity';
 
 @Entity('comment')
 export class CommentEntity extends BaseEntity {
@@ -20,4 +22,7 @@ export class CommentEntity extends BaseEntity {
   @ManyToOne(() => CommentEntity, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'parent_comment_id' })
   parentComment: CommentEntity | null;
+
+  @OneToMany(() => CommentLikeEntity, (like) => like.comment)
+  likes: CommentLikeEntity[];
 }
