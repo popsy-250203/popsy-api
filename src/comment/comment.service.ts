@@ -21,4 +21,27 @@ export class CommentService {
 
     return await this.commentRepository.save(comment);
   }
+
+  async getComments(postId: string) {
+    const comments = await this.commentRepository.find({
+      where: { post: { id: +postId } },
+      relations: ['user', 'parentComment'],
+    });
+
+    const rootComments = comments.filter((comment) => !comment.parentComment);
+    const childComments = comments.filter((comment) => comment.parentComment);
+
+    const buildHierarchy = (parentComment) => {
+      const children = childComments.filter(
+        (child) => child.parentComment.id === parentComment.id,
+      );
+
+      return {
+        ...parentComment,
+        children: children.map((child) => buildHierarchy(child)),
+      };
+    };
+
+    return rootComments.map((rootComment) => buildHierarchy(rootComment));
+  }
 }
