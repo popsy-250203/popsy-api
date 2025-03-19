@@ -8,7 +8,7 @@ import { AppDataSource } from '../data-source';
 import { UserModule } from './user/user.module';
 import { JwtAuthMiddleware } from './user/middleware/jwt-token.middleware';
 import { PostModule } from './post/post.module';
-
+import { CommentModule } from './comment/comment.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +35,7 @@ import { PostModule } from './post/post.module';
     }),
     UserModule,
     PostModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],
