@@ -53,6 +53,7 @@ export class PostController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('createdAfter') createdAfter?: Date,
+    @Query('category') category?: string,
   ) {
     return this.postService.getPostList(
       sort,
@@ -60,6 +61,7 @@ export class PostController {
       page,
       limit,
       createdAfter,
+      category,
     );
   }
 

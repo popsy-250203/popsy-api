@@ -37,13 +37,14 @@ export class PostService {
     page?: number,
     limit?: number,
     createdAfter?: Date | undefined,
+    category?: string,
   ) {
-    console.log('createdAfter', createdAfter);
     const [posts, total] = await this.postRepository.findAndCount({
       where: {
         ...(createdAfter && {
           createdAt: MoreThanOrEqual(createdAfter),
         }),
+        ...(category && { category }),
       },
       ...(sort &&
         sortKey && { order: { [sortKey]: sort === 'desc' ? 'DESC' : 'ASC' } }),
