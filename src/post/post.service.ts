@@ -87,16 +87,32 @@ export class PostService {
   ): Promise<PostEntity & { likeCount: number }> {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['creator', 'likes'],
+      relations: ['creator', 'likes', 'likes.user'],
     });
+    console.log('post', post);
 
     if (!post) {
       throw new NotFoundException('Post not found');
     }
 
+    const transformedLikes = post.likes.map((like) => ({
+      ...like,
+      userId: like.user.id,
+      user: undefined,
+    }));
+
+    const likeCount = post.likes.filter(
+      (like) => like.isLiked === this.LIKE_STATUS.LIKED,
+    ).length;
+    const unlikeCount = post.likes.filter(
+      (like) => like.isLiked === this.LIKE_STATUS.UNLIKED,
+    ).length;
+
     return {
       ...post,
-      likeCount: post.likes.length,
+      likeCount,
+      unlikeCount,
+      likes: transformedLikes,
     };
   }
 
@@ -118,26 +134,25 @@ export class PostService {
     if (like.isLiked === this.LIKE_STATUS.LIKED) {
       like.isLiked = null;
       post.likeCount--;
-      await qr.manager.save(like);
-      return qr.manager.save(post);
+      await qr.manager.save(PostLikeEntity, like);
+      return qr.manager.save(PostEntity, post);
     }
 
     like.isLiked = this.LIKE_STATUS.LIKED;
     post.likeCount++;
-    await qr.manager.save(like);
-    return qr.manager.save(post);
+    await qr.manager.save(PostLikeEntity, like);
+    return qr.manager.save(PostEntity, post);
   }
 
   private async createNewLike(post: PostEntity, userId: number, qr: QR) {
-    const newLike = qr.manager.create(PostLikeEntity, {
+    await qr.manager.update(PostEntity, post.id, {
+      likeCount: post.likeCount + 1,
+    });
+    return qr.manager.save(PostLikeEntity, {
       post: { id: post.id },
       user: { id: userId },
       isLiked: this.LIKE_STATUS.LIKED,
     });
-
-    post.likeCount++;
-    await qr.manager.save(newLike);
-    return qr.manager.save(post);
   }
 
   private async handleExistingUnlike(
@@ -147,15 +162,20 @@ export class PostService {
   ) {
     if (like.isLiked === this.LIKE_STATUS.UNLIKED) {
       like.isLiked = null;
-      post.unlikeCount--;
-      await qr.manager.save(like);
-      return qr.manager.save(post);
+      await qr.manager.save(PostLikeEntity, like);
+      return qr.manager.save(PostEntity, {
+        ...post,
+        unlikeCount: post.unlikeCount - 1,
+      });
     }
 
     like.isLiked = this.LIKE_STATUS.UNLIKED;
-    post.unlikeCount++;
-    await qr.manager.save(like);
-    return qr.manager.save(post);
+    await qr.manager.save(PostLikeEntity, like);
+    return qr.manager.save(PostEntity, {
+      ...post,
+      likeCount: post.likeCount - 1,
+      unlikeCount: post.unlikeCount + 1,
+    });
   }
 
   private async createNewUnlike(post: PostEntity, userId: number, qr: QR) {

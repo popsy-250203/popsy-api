@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { classToPlain } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { RegisterOrLoginDto } from './dto/registor-or-login.dto';
@@ -109,7 +108,7 @@ export class UserService {
       throw new BadRequestException('User not found');
     }
 
-    return classToPlain(user);
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
