@@ -23,6 +23,9 @@ export class CommentService {
       ...createCommentDto,
       user: { id: userId },
       post: { id: createCommentDto.postId },
+      parentComment: createCommentDto.parentCommentId
+        ? { id: createCommentDto.parentCommentId }
+        : undefined,
     });
 
     return await this.commentRepository.save(comment);
