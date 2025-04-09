@@ -31,7 +31,7 @@ export class CommentService {
   async getComments(postId: string) {
     const comments = await this.commentRepository.find({
       where: { post: { id: +postId } },
-      relations: ['user', 'parentComment', 'likes'],
+      relations: ['user', 'parentComment', 'likes', 'likes.user'],
     });
 
     const rootComments = comments.filter((comment) => !comment.parentComment);
@@ -41,10 +41,16 @@ export class CommentService {
       const children = childComments.filter(
         (child) => child.parentComment.id === parentComment.id,
       );
+      const transformedLikes = likes.map((like) => ({
+        ...like,
+        userId: like.user.id,
+        user: undefined,
+      }));
 
       return {
         ...parentComment,
         likeCount: likes.length,
+        likes: transformedLikes,
         children: children.map((child) => buildHierarchy(child)),
       };
     };

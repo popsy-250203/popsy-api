@@ -89,7 +89,6 @@ export class PostService {
       where: { id },
       relations: ['creator', 'likes', 'likes.user'],
     });
-    console.log('post', post);
 
     if (!post) {
       throw new NotFoundException('Post not found');
