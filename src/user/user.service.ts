@@ -84,6 +84,22 @@ export class UserService {
       return this.login(registerOrLoginDto);
     }
 
+    if (registerOrLoginDto.provider !== AuthProvider.EMAIL) {
+      const newUser = await this.userRepository.create({
+        ...registerOrLoginDto,
+        password: '',
+      });
+      await this.userRepository.save(newUser);
+
+      const payload = {
+        userId: newUser.id,
+        email: newUser.email,
+      };
+
+      const token = this.jwtService.sign(payload);
+      return { accessToken: token };
+    }
+
     const hashedPassword = await bcrypt.hash(registerOrLoginDto.password, 10);
     const newUser = await this.userRepository.create({
       ...registerOrLoginDto,
