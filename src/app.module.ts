@@ -44,7 +44,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(JwtAuthMiddleware)
-      .exclude('user/register-or-login')
+      .exclude('user/register-or-login', 'post/list', 'post/:id')
       .forRoutes('*');
   }
 }
